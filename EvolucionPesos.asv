@@ -1,0 +1,29 @@
+function [W,ErrorVector] = EvolucionPesos (TablaVerdad,Nentradas)
+
+W=randn(1,Nentradas+1);
+K=1;
+
+Error=ECM(TablaVerdad,W',Nentradas);
+ErrorVector=Error;
+
+while Error~=0
+   
+    W=[W ; zeros(1,Nentradas+1)];
+   indice=randperm(Nentradas^2);
+   for i=1:length(indice)
+       
+        Entrada=[TablaVerdad(indice(i),1:Nentradas), 1];
+        SalidaDeseada=TablaVerdad(indice(i),Nentradas+1); 
+        Salida=SignoGonzalo(Entrada*W');
+    
+        DeltaW=K*(SalidaDeseada-Salida)*Entrada;
+        W=W+DeltaW;
+        
+   end
+   
+   Error=ECM(TablaVerdad,W',Nentradas);
+   ErrorVector=[ErrorVector,Error];
+    
+end
+
+end
